@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vulnerable-XSS-Todo</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script src="/static/js/vue.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/note">Vulnerable XSS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/note">Home </a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/todo">Todo <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/contact_us">Contact Us</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br>
+<div id="app">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 col-md-3">
+                <form v-on:submit.prevent="addNewTodo">
+                    <div class="card">
+                        <div class="card-header">
+                            Todo
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" name="todo" v-model="name"></input>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+                <br>
+                <br>
+                <div class="card">
+                    <li class="list-group-item" v-for="todo in all_todo">
+                       <span v-html="todo"></span>
+                    </li>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="/static/js/jquery-3.3.1.slim.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            name: '',
+            all_todo: []
+        },
+        delimiters: ["[[", "]]"],
+        methods: {
+            addNewTodo() {
+                this.all_todo.push(this.name);
+                this.name = ''
+            }
+        }
+    })
+</script>
+
+</body>
+</body>
+</html>

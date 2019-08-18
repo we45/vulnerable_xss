@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vulnerable-XSS-Note</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/note">Vulnerable XSS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/note">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/todo">Todo</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/contact_us">Contact Us</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 col-md-3">
+            <form method="POST">
+                <div class="card">
+                    <div class="card-header">
+                        Note
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" id="note" rows="3" name="note"></textarea>
+                        {#                        <input class="form-control" name="todo"></input>#}
+                    </div>
+                    <input type="submit" value="Save" class="btn btn-primary">
+                </div>
+                <br>
+            </form>
+            <br>
+            <br>
+        </div>
+    </div>
+    <div class="row">
+        {% for todo in output %}
+            <div class="col-sm-3">
+                <div class="card">
+{#                    <input type="hidden" value="{{ todo.name }}" id="demo">#}
+                    <li class="list-group-item">
+                       <span onmouseover=hoverXSS({{ todo.name }})>
+                           {{ todo.name }}
+                       </span>
+                        <span id="stored_xss"></span>
+                    </li>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="/static/js/jquery-3.3.1.slim.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript">
+    function hoverXSS(name) {
+        {#console.log("Hello", name)#}
+        {#document.getElementById("stored_xss").innerHTML = name;#}
+    }
+</script>
+
+</body>
+</body>
+</html>
