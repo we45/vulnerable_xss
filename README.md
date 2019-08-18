@@ -51,6 +51,8 @@ python3 app.py
 ### Follow the documentation to exploit the XSS vulnerabilities
 
 [DOM Based XSS](DOMBASEDXSS.md)
+
 [Stored XSS](STOREDXSS.md)
+
 [Reflected XSS](REFLECTEDXSS.md)
 
