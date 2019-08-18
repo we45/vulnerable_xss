@@ -29,6 +29,7 @@
 </nav>
 <br>
 <div class="container">
+<input type="hidden" value="{{ encoded }}" id="token">
     <div class="row">
         <div class="col-md-6 offset-md-3 col-md-3">
             <form method="POST">
@@ -74,9 +75,10 @@
 
 <script type="text/javascript">
     function hoverXSS(name) {
-        {#console.log("Hello", name)#}
         {#document.getElementById("stored_xss").innerHTML = name;#}
     }
+    var token = $('#token').val();
+    localStorage.setItem('token', token)
 </script>
 
 </body>

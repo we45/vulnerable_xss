@@ -5,6 +5,7 @@ import os
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
+import jwt
 
 app = Flask(__name__, template_folder='templates')
 loader = FileSystemLoader( searchpath="templates/")
@@ -16,6 +17,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = database_file
 db = SQLAlchemy(app)
 app_port = os.environ.get('APP_PORT', 5060)
 
+key = '5cAR6^Z#Z$@RLCDew%p^ksM&B63&exX&m'
+
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String,nullable=False)
@@ -24,7 +27,7 @@ class Note(db.Model):
         return '<Note : id={0}, name={1}'.format(self.id, self.name)
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'GET':
         db.create_all()
@@ -33,18 +36,8 @@ def home():
             output = note
         else:
             output = "Welcome to XSS Lab"
-        return render_template('note.html', output=output)
-
-@app.route('/note', methods=['GET', 'POST'])
-def create_note():
-    if request.method == 'GET':
-        db.create_all()
-        note = db.session.query(Note).all()
-        if(len(note) > 0):
-            output = note
-        else:
-            output = "Welcome to XSS Lab"
-        return render_template('note.html', output=output)
+        encoded = jwt.encode({'some': 'payload'}, key, algorithm='HS256')
+        return render_template('note.html', output=output, encoded=encoded)
     elif request.method == 'POST':
         # name = Jinja2.from_string(request.form['note']).render()
         name = request.form['note']
@@ -56,10 +49,41 @@ def create_note():
             output = note
         else:
             output = "Welcome to XSS Lab"
-        return render_template('note.html', output=output)
+        encoded = jwt.encode({'some': 'payload'}, key, algorithm='HS256')
+        return render_template('note.html', output=output, encoded=encoded)
     else:
-        output = "Welcome to Server Side Template Injection"
-        return render_template('note.html', output=output)
+        output = "Welcome to XSS Lab"
+        encoded = jwt.encode({'some': 'payload'}, key, algorithm='HS256')
+        return render_template('note.html', output=output, encoded=encoded)
+
+@app.route('/note', methods=['GET', 'POST'])
+def create_note():
+    if request.method == 'GET':
+        db.create_all()
+        note = db.session.query(Note).all()
+        if(len(note) > 0):
+            output = note
+        else:
+            output = "Welcome to XSS Lab"
+        encoded = jwt.encode({'some': 'payload'}, key, algorithm='HS256')
+        return render_template('note.html', output=output, encoded=encoded)
+    elif request.method == 'POST':
+        # name = Jinja2.from_string(request.form['note']).render()
+        name = request.form['note']
+        page = Note(name=name)
+        db.session.add(page)
+        db.session.commit()
+        note = db.session.query(Note).all()
+        if (len(note) > 0):
+            output = note
+        else:
+            output = "Welcome to XSS Lab"
+        encoded = jwt.encode({'some': 'payload'}, key, algorithm='HS256')
+        return render_template('note.html', output=output, encoded=encoded)
+    else:
+        output = "Welcome to XSS Lab"
+        encoded = jwt.encode({'some': 'payload'}, key, algorithm='HS256')
+        return render_template('note.html', output=output, encoded=encoded)
 
 @app.route("/todo", methods=['GET'])
 def create_todo():
